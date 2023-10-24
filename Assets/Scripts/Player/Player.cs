@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     Rigidbody2D rb2D;
 
     float speed = 5.0f;     // Playerの移動速度
-    int gravitySwitch = 0;  // 重力の切り替え
+    int gravityChange = 0;  // 重力の変更
     bool isJump = false;    // ジャンプしているか
     float jumpPower = 0;    // ジャンプ力
 
@@ -16,36 +16,51 @@ public class Player : MonoBehaviour
     void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
-        rb2D.gravityScale = 5f;
+        rb2D.gravityScale = 5.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            gravitySwitch++;
-            if (gravitySwitch % 2 == 0)
-            {
-                rb2D.gravityScale = 1000;
-            }
-            else if (gravitySwitch % 2 == 1)
-            {
-                rb2D.gravityScale = -1000;
-            }
-        }
+        GravityChange();
+        Jump();
 
-        if (isJump == true) return;
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
-            isJump = true;
-        }
+        //if(rb2D.velocity.x <= 1)
+        //{
+        //    Destroy(gameObject);
+        //}
     }
-
     void FixedUpdate()
     {
         rb2D.velocity = new Vector2(speed, rb2D.velocity.y);
+    }
+
+
+    void GravityChange()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            gravityChange++;
+            if (gravityChange % 2 == 0)
+            {
+                rb2D.gravityScale = 1000.0f;
+            }
+            else if (gravityChange % 2 == 1)
+            {
+                rb2D.gravityScale = -1000.0f;
+            }
+        }
+    }
+
+    void Jump()
+    {
+        if (isJump == true) return;
+        if (Input.GetKey(KeyCode.Space))
+        {
+            rb2D.velocity = Vector3.zero;
+            rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
+            isJump = true;
+        }
     }
 
 
@@ -53,14 +68,14 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.tag == "Floor")
         {
-            rb2D.gravityScale = 5f;
-            jumpPower = 15f;
+            rb2D.gravityScale = 5.0f;
+            jumpPower = 800.0f * Time.deltaTime;
             isJump = false;
         }
         else if(other.gameObject.tag == "Ceiling")
         {
-            rb2D.gravityScale = -5f;
-            jumpPower = -15f;
+            rb2D.gravityScale = -5.0f;
+            jumpPower = -800.0f * Time.deltaTime;
             isJump = false;
         }
     }

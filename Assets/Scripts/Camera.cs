@@ -6,10 +6,9 @@ public class Camera : MonoBehaviour
 {
     [SerializeField] Player player;
 
-
     // Update is called once per frame
     void Update()
     {
-        transform.position = player.transform.position;
+        transform.position = new Vector3(player.transform.position.x + 6.5f, 0.0f, -10.0f);
     }
 }

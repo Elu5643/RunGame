@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class PlayerImage : MonoBehaviour
 {
-    float angle = 1;
+    float angle = 400.0f;
 
     // Update is called once per frame
     void Update()
     {
-        transform.rotation *= Quaternion.AngleAxis(angle, Vector3.back);
+        transform.rotation *= Quaternion.AngleAxis(angle * Time.deltaTime, Vector3.back);
     }
 }
