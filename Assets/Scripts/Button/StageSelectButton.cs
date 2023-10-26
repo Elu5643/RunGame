@@ -8,16 +8,21 @@ public class StageSelectButton : MonoBehaviour
     // ƒ{ƒ^ƒ“UI‚ÅŽg‚¤ˆ×public
     public void OnClickStage1Button()
     {
-        StartCoroutine(ClickStart());
+        StartCoroutine(StageSelect("Stage1"));
     }
 
-    IEnumerator ClickStart()
+    public void OnClickBackMenuButton()
+    {
+        StartCoroutine(StageSelect("TitleScene"));
+    }
+
+    IEnumerator StageSelect(string stageSelect)
     {
         GameSceneManager.Instance.FadeOut();
         while (GameSceneManager.Instance.IsFadeOut)
         {
             yield return null;
         }
-        SceneManager.LoadScene("Stage1");
+        SceneManager.LoadScene(stageSelect);
     }
 }

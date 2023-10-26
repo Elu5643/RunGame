@@ -7,6 +7,7 @@ TagManager:
   - Ceiling
   - Floor
   - TheWall
+  - Goal
   layers:
   - Default
   - TransparentFX

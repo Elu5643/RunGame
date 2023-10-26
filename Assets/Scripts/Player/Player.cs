@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO.IsolatedStorage;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] ShakeCamera shake = null;
-    [SerializeField] GameObject effect = null;
+    [SerializeField] GameObject goalEffect = null;
+    [SerializeField] GameObject deathEffect = null;
+
     Rigidbody2D rb2D = null;
 
     bool isJump = false;    // ÉWÉÉÉìÉvÇµÇƒÇ¢ÇÈÇ©
@@ -27,6 +30,13 @@ public class Player : MonoBehaviour
         get { return isDeath; }
     }
 
+    bool isGoal = false;    // ÉSÅ[ÉãÇµÇΩÇ©îªíË
+    public bool IsGoal
+    {
+        get { return isGoal; }
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,19 +49,27 @@ public class Player : MonoBehaviour
     void Update()
     {
         if (isDeath == true) return;
-        if (rb2D.velocity.x <= 0)
+        if (rb2D.velocity.x < 5.5f)
         {
             Destroy();
         }
 
         GravitySwitch();
         Jump();
+
+        if (isGoal == false) return;
+        if (isJump == true) return;
+        rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
+        isJump = true;
     }
 
 
     void FixedUpdate()
     {
-        rb2D.velocity = new Vector2(speed * Time.deltaTime, rb2D.velocity.y);
+        if (isGoal == false)
+        {
+            rb2D.velocity = new Vector2(speed * Time.deltaTime, rb2D.velocity.y);
+        }
     }
 
 
@@ -83,11 +101,14 @@ public class Player : MonoBehaviour
 
     void Destroy()
     {
-        shake.BeginShake(0.25f, 0.1f);
-        Instantiate(effect, transform.position, Quaternion.identity);
-        Destroy(gameObject);
-        GameObject.Find("GameController")?.GetComponent<GameController>()?.FailureGame();
-        isDeath = true;
+        if(isGoal == false) 
+        {
+            shake.BeginShake(0.25f, 0.1f);
+            Instantiate(deathEffect, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+            GameObject.Find("GameController")?.GetComponent<GameController>()?.FailureGame();
+            isDeath = true;
+        }
     }
 
 
@@ -109,6 +130,19 @@ public class Player : MonoBehaviour
         if(other.gameObject.tag == "TheWall")
         {
             Destroy();
+        }
+        
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Goal")
+        {
+            Instantiate(goalEffect, new Vector3(transform.position.x + 6.5f, 0.0f, 0.0f), Quaternion.identity);
+            rb2D.velocity = Vector3.zero;
+            GameObject.Find("GameController")?.GetComponent<GameController>()?.ClearGame();
+
+            isGoal = true;
         }
     }
 }

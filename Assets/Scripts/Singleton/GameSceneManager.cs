@@ -9,6 +9,7 @@ public class GameSceneManager : SingletonMonoBehaviour<GameSceneManager>
 
 
     [SerializeField] Image box = null;
+    [SerializeField] Image image = null;
     float angle = 400.0f;
     float changeSpeed = 15.0f;
 
@@ -48,6 +49,7 @@ public class GameSceneManager : SingletonMonoBehaviour<GameSceneManager>
     IEnumerator FadeInMove()
     {
         box.enabled = true;
+        image.enabled = true;
 
         box.transform.rotation *= Quaternion.AngleAxis(angle * Time.deltaTime, Vector3.back);
         box.transform.localScale -= Vector3.one * changeSpeed * Time.deltaTime;
@@ -57,6 +59,7 @@ public class GameSceneManager : SingletonMonoBehaviour<GameSceneManager>
             isFadeIn = false;
 
             box.enabled = false;
+            image.enabled = false;
 
             yield return null;
         }
@@ -67,6 +70,7 @@ public class GameSceneManager : SingletonMonoBehaviour<GameSceneManager>
         while (true)
         {
             box.enabled = true;
+            image.enabled = true;
 
             box.transform.rotation *= Quaternion.AngleAxis(angle * Time.deltaTime, Vector3.back);
             box.transform.localScale += Vector3.one *  changeSpeed * Time.deltaTime;

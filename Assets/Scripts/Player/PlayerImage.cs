@@ -15,7 +15,7 @@ public class PlayerImage : MonoBehaviour
         {
             angle = 400.0f;
         }
-        else if(player.GravityChange % 2 == 1)
+        else if (player.GravityChange % 2 == 1)
         {
             angle = -400.0f;
         }
