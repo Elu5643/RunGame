@@ -12,44 +12,48 @@ public class Player : MonoBehaviour
 
     Rigidbody2D rb2D = null;
 
-    bool isJump = false;    // ジャンプしているか
-    float jumpPower = 0;    // ジャンプ力
+    bool isJump = false;            // ジャンプしているか
+    float jumpPower = 0;            // ジャンプ力
+    float speed = 275.0f;           // Playerの移動速度
+    int gravityChange = 0;          // 重力の変更
+    float invincibleTimer = 0.0f;   // 無敵の時間
 
-    float speed = 275.0f;     // Playerの移動速度
 
-    int gravityChange = 0;  // 重力の変更
+
     public int GravityChange
     {
         get { return gravityChange; }
     }
-
-
     bool isDeath = false;   // Playerが死んでるか判定
     public bool IsDeath
     {
         get { return isDeath; }
     }
-
     bool isGoal = false;    // ゴールしたか判定
     public bool IsGoal
     {
         get { return isGoal; }
     }
 
-
     // Start is called before the first frame update
     void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
         rb2D.gravityScale = 5.0f;
-        rb2D.velocity = new Vector2(speed * Time.deltaTime, rb2D.velocity.y);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (invincibleTimer <= 1.0f)
+        {
+            invincibleTimer += Time.deltaTime;
+            return;
+        }
+        
+
         if (isDeath == true) return;
-        if (rb2D.velocity.x < 5.5f)
+        if (rb2D.velocity.x < 3)
         {
             Destroy();
         }
@@ -57,10 +61,7 @@ public class Player : MonoBehaviour
         GravitySwitch();
         Jump();
 
-        if (isGoal == false) return;
-        if (isJump == true) return;
-        rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
-        isJump = true;
+        Goal();
     }
 
 
@@ -99,13 +100,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    void Goal()
+    {
+        if (isGoal == false) return;
+        if (isJump == true) return;
+        rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
+        isJump = true;
+    }
+
     void Destroy()
     {
         if(isGoal == false) 
         {
             shake.BeginShake(0.25f, 0.1f);
             Instantiate(deathEffect, transform.position, Quaternion.identity);
-            Destroy(gameObject);
+            gameObject.SetActive(false);
             GameObject.Find("GameController")?.GetComponent<GameController>()?.FailureGame();
             isDeath = true;
         }
