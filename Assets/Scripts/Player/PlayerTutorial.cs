@@ -41,6 +41,7 @@ public class PlayerTutorial : MonoBehaviour
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Return))
         {
+            audioSource.PlayOneShot(gravitySwitchSE);
             gravityChange++;
             if (gravityChange % 2 == 0)
             {
@@ -80,6 +81,7 @@ public class PlayerTutorial : MonoBehaviour
         if (isJump == true) return;
         if (Input.GetKey(KeyCode.Space))
         {
+            audioSource.PlayOneShot(jumpSE);
             rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
             isJump = true;
         }

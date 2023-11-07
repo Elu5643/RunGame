@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject deathEffect = null;
     [SerializeField] AudioClip jumpSE = null;
     [SerializeField] AudioClip gravitySwitchSE = null;
+    [SerializeField] AudioClip clearSE = null;
+    [SerializeField] AudioClip deathSE = null;
 
     Rigidbody2D rb2D = null;
     AudioSource audioSource = null;
@@ -30,16 +32,12 @@ public class Player : MonoBehaviour
     {
         get { return isDeath; }
     }
+
     bool isGoal = false;    // ÉSÅ[ÉãÇµÇΩÇ©îªíË
-    public bool IsGoal
-    {
-        get { return isGoal; }
-    }
 
     // Start is called before the first frame update
     void Start()
     {
-
         rb2D = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
         rb2D.gravityScale = 5.0f;
@@ -64,7 +62,6 @@ public class Player : MonoBehaviour
 
         GravitySwitch();
         Jump();
-
     }
 
 
@@ -161,9 +158,9 @@ public class Player : MonoBehaviour
     {
         if(isGoal == false) 
         {
+            audioSource.PlayOneShot(deathSE);
             shake.BeginShake(0.25f, 0.1f);
             Instantiate(deathEffect, transform.position, Quaternion.identity);
-            gameObject.SetActive(false);
             GameObject.Find("GameController")?.GetComponent<GameController>()?.FailureGame();
             isDeath = true;
         }
@@ -199,6 +196,7 @@ public class Player : MonoBehaviour
             Instantiate(goalEffect, new Vector3(transform.position.x + 6.5f, 0.0f, 0.0f), Quaternion.identity);
             rb2D.velocity = Vector3.zero;
             GameObject.Find("GameController")?.GetComponent<GameController>()?.ClearGame();
+            audioSource.PlayOneShot(clearSE);
 
             isGoal = true;
         }

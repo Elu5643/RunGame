@@ -20,5 +20,10 @@ public class PlayerImage : MonoBehaviour
             angle = -400.0f;
         }
         transform.rotation *= Quaternion.AngleAxis(angle * Time.deltaTime, Vector3.back);
+
+        if (player.IsDeath)
+        {
+            gameObject.SetActive(false);
+        }
     }
 }
