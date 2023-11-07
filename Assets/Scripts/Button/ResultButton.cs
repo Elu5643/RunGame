@@ -7,16 +7,18 @@ public class ResultButton : MonoBehaviour
 {
     [SerializeField] AudioClip clickSE = null;
     AudioSource audioSource = null;
+    string sceneName;
 
     void Start()
     {
+        sceneName = SceneManager.GetActiveScene().name;
         audioSource = GetComponent<AudioSource>();
     }
 
     // ƒ{ƒ^ƒ“UI‚ÅŽg‚¤ˆ×public
     public void OnClickRetryStage1Button()
     {
-        StartCoroutine(Result("Stage1"));
+        StartCoroutine(Result(sceneName));
     }
     
     public void OnClickReturnButton()

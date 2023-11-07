@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] AudioClip jumpSE = null;
     [SerializeField] AudioClip gravitySwitchSE = null;
     [SerializeField] AudioClip clearSE = null;
-    [SerializeField] AudioClip deathSE = null;
+    [SerializeField] AudioClip deathSE = null; 
 
     Rigidbody2D rb2D = null;
     AudioSource audioSource = null;
@@ -67,10 +67,8 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isGoal == false)
-        {
-            rb2D.velocity = new Vector2(speed * Time.deltaTime, rb2D.velocity.y);
-        }
+        if (isGoal == true || isDeath == true) return;
+        rb2D.velocity = new Vector2(speed * Time.deltaTime, rb2D.velocity.y);
     }
 
 
@@ -151,14 +149,16 @@ public class Player : MonoBehaviour
         if (isGoal == false) return;
         if (isJump == true) return;
         rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
+        
         isJump = true;
     }
 
     void Destroy()
     {
-        if(isGoal == false) 
+        if(isDeath == false) 
         {
             audioSource.PlayOneShot(deathSE);
+            rb2D.velocity = Vector3.zero;
             shake.BeginShake(0.25f, 0.1f);
             Instantiate(deathEffect, transform.position, Quaternion.identity);
             GameObject.Find("GameController")?.GetComponent<GameController>()?.FailureGame();

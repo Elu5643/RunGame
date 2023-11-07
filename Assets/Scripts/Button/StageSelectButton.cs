@@ -18,6 +18,11 @@ public class StageSelectButton : MonoBehaviour
     {
         StartCoroutine(StageSelect("Stage1"));
     }
+    
+    public void OnClickStage2Button()
+    {
+        StartCoroutine(StageSelect("Stage2"));
+    }
 
     public void OnClickBackMenuButton()
     {
