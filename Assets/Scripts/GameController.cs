@@ -10,13 +10,6 @@ public class GameController : MonoBehaviour
     [SerializeField] Text resultText = null;
     [SerializeField] Canvas resultButton = null;
 
-    [SerializeField] GameObject bgmObject;
-    AudioSource bgm;
-    void Start()
-    {
-        bgm = bgmObject.GetComponent<AudioSource>();
-    }
-
     // ƒvƒŒƒCƒ„[‘¤‚Å€–S‚µ‚½Û‚É‚±‚ÌŠÖ”‚ğŒÄ‚Ô
     public void FailureGame()
     {
@@ -36,7 +29,7 @@ public class GameController : MonoBehaviour
     {
         resultText.text = message;
         resultButton.enabled = true;
-        bgm.Stop();
+        GameSoundManager.Instance.PlayBGMStop();
         yield break;
     }
 }

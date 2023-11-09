@@ -8,13 +8,8 @@ public class Player : MonoBehaviour
     [SerializeField] ShakeCamera shake = null;
     [SerializeField] GameObject goalEffect = null;
     [SerializeField] GameObject deathEffect = null;
-    [SerializeField] AudioClip jumpSE = null;
-    [SerializeField] AudioClip gravitySwitchSE = null;
-    [SerializeField] AudioClip clearSE = null;
-    [SerializeField] AudioClip deathSE = null; 
 
     Rigidbody2D rb2D = null;
-    AudioSource audioSource = null;
 
     bool isJump = false;            // ジャンプしているか
     float jumpPower = 0;            // ジャンプ力
@@ -38,8 +33,8 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameSoundManager.Instance.PlayBGM(GameSoundManager.BGMType.Stage1);
         rb2D = GetComponent<Rigidbody2D>();
-        audioSource = GetComponent<AudioSource>();
         rb2D.gravityScale = 5.0f;
     }
 
@@ -71,57 +66,13 @@ public class Player : MonoBehaviour
         rb2D.velocity = new Vector2(speed * Time.deltaTime, rb2D.velocity.y);
     }
 
-
-    void GravitySwitch()
-    {
-#if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            audioSource.PlayOneShot(gravitySwitchSE);
-            gravityChange++;
-            if (gravityChange % 2 == 0)
-            {
-                rb2D.gravityScale = 1000.0f;
-            }
-            else if (gravityChange % 2 == 1)
-            {
-                rb2D.gravityScale = -1000.0f;
-            }
-        }
-
-#else
-
-        Touch touch = Input.GetTouch(0);
-
-        if (Input.mousePosition.x >= Screen.width / 2)
-        {
-            // 右側をタップしたら
-            if (touch.phase == TouchPhase.Began)
-            {
-                audioSource.PlayOneShot(gravitySwitchSE);
-                gravityChange++;
-                if (gravityChange % 2 == 0)
-                {
-                    rb2D.gravityScale = 1000.0f;
-                }
-                else if (gravityChange % 2 == 1)
-                {
-                    rb2D.gravityScale = -1000.0f;
-                }
-            }
-        }
-
-#endif
-    }
-
-
     void Jump()
     {
 #if UNITY_EDITOR
         if (isJump == true) return;
         if (Input.GetKey(KeyCode.Space))
         {
-            audioSource.PlayOneShot(jumpSE);
+            GameSoundManager.Instance.PlaySE(GameSoundManager.SEType.Jump);
             rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
             isJump = true;
         }
@@ -135,14 +86,54 @@ public class Player : MonoBehaviour
             // 左側をタップしたら
             if (touch.phase == TouchPhase.Began)
             {
-                audioSource.PlayOneShot(jumpSE);
+                GameSoundManager.Instance.PlaySE(GameSoundManager.SEType.Jump);
                 rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
                 isJump = true;
             }
         }
-
 #endif
     }
+
+    void GravitySwitch()
+    {
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            GameSoundManager.Instance.PlaySE(GameSoundManager.SEType.GravitySwitch);
+            gravityChange++;
+            if (gravityChange % 2 == 0)
+            {
+                rb2D.gravityScale = 1000.0f;
+            }
+            else if (gravityChange % 2 == 1)
+            {
+                rb2D.gravityScale = -1000.0f;
+            }
+        }
+
+#else
+        Touch touch = Input.GetTouch(0);
+
+        if (Input.mousePosition.x >= Screen.width / 2)
+        {
+            // 右側をタップしたら
+            if (touch.phase == TouchPhase.Began)
+            {
+                GameSoundManager.Instance.PlaySE(GameSoundManager.SEType.GravitySwitch);
+                gravityChange++;
+                if (gravityChange % 2 == 0)
+                {
+                    rb2D.gravityScale = 1000.0f;
+                }
+                else if (gravityChange % 2 == 1)
+                {
+                    rb2D.gravityScale = -1000.0f;
+                }
+            }
+        }
+#endif
+    }
+
 
     void Goal()
     {
@@ -157,7 +148,7 @@ public class Player : MonoBehaviour
     {
         if(isDeath == false) 
         {
-            audioSource.PlayOneShot(deathSE);
+            GameSoundManager.Instance.PlaySE(GameSoundManager.SEType.Death);
             rb2D.velocity = Vector3.zero;
             shake.BeginShake(0.25f, 0.1f);
             Instantiate(deathEffect, transform.position, Quaternion.identity);
@@ -196,7 +187,7 @@ public class Player : MonoBehaviour
             Instantiate(goalEffect, new Vector3(transform.position.x + 6.5f, 0.0f, 0.0f), Quaternion.identity);
             rb2D.velocity = Vector3.zero;
             GameObject.Find("GameController")?.GetComponent<GameController>()?.ClearGame();
-            audioSource.PlayOneShot(clearSE);
+            GameSoundManager.Instance.PlaySE(GameSoundManager.SEType.Clear);
 
             isGoal = true;
         }

@@ -5,12 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class StageSelectButton : MonoBehaviour
 {
-    [SerializeField] AudioClip clickSE = null;
-    AudioSource audioSource = null;
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
+        GameSoundManager.Instance.PlayBGM(GameSoundManager.BGMType.StageSelect);
     }
 
     // ƒ{ƒ^ƒ“UI‚ÅŽg‚¤ˆ×public
@@ -31,7 +29,7 @@ public class StageSelectButton : MonoBehaviour
 
     IEnumerator StageSelect(string stageSelect)
     {
-        audioSource.PlayOneShot(clickSE);
+        GameSoundManager.Instance.PlaySE(GameSoundManager.SEType.Click);
         GameSceneManager.Instance.FadeOut();
         while (GameSceneManager.Instance.IsFadeOut)
         {

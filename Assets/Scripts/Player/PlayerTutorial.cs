@@ -4,11 +4,7 @@ using UnityEngine;
 
 public class PlayerTutorial : MonoBehaviour
 {
-    [SerializeField] AudioClip jumpSE = null;
-    [SerializeField] AudioClip gravitySwitchSE = null;
-
     Rigidbody2D rb2D = null;
-    AudioSource audioSource = null;
 
 
     bool isJump = false;    // ジャンプしているか
@@ -24,16 +20,47 @@ public class PlayerTutorial : MonoBehaviour
     void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
-        audioSource = GetComponent<AudioSource>();
         rb2D.gravityScale = 5.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
+        GameSoundManager.Instance.PlayBGM(GameSoundManager.BGMType.Title);
+
         Jump();
         GravitySwitch();
     }
+
+    void Jump()
+    {
+#if UNITY_EDITOR
+        if (isJump == true) return;
+        if (Input.GetKey(KeyCode.Space))
+        {
+            GameSoundManager.Instance.PlaySE(GameSoundManager.SEType.Jump);
+
+            rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
+            isJump = true;
+        }
+
+#else
+        if (isJump == true) return;
+        Touch touch = Input.GetTouch(0);
+
+        if (Input.mousePosition.x <= Screen.width / 2)
+        {
+            // 左側をタップしたら
+            if (touch.phase == TouchPhase.Began)
+            {
+                GameSoundManager.Instance.PlaySE(GameSoundManager.SEType.Jump);
+                rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
+                isJump = true;
+            }
+        }
+#endif
+    }
+
 
     void GravitySwitch()
     {
@@ -41,7 +68,7 @@ public class PlayerTutorial : MonoBehaviour
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            audioSource.PlayOneShot(gravitySwitchSE);
+            GameSoundManager.Instance.PlaySE(GameSoundManager.SEType.GravitySwitch);
             gravityChange++;
             if (gravityChange % 2 == 0)
             {
@@ -60,7 +87,7 @@ public class PlayerTutorial : MonoBehaviour
             // 右側をタップしたら
             if (touch.phase == TouchPhase.Began)
             {
-                audioSource.PlayOneShot(gravitySwitchSE);
+                GameSoundManager.Instance.PlaySE(GameSoundManager.SEType.GravitySwitch);
                 gravityChange++;
                 if (gravityChange % 2 == 0)
                 {
@@ -75,33 +102,7 @@ public class PlayerTutorial : MonoBehaviour
 #endif
     }
 
-    void Jump()
-    {
-#if UNITY_EDITOR
-        if (isJump == true) return;
-        if (Input.GetKey(KeyCode.Space))
-        {
-            audioSource.PlayOneShot(jumpSE);
-            rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
-            isJump = true;
-        }
-
-#else
-        if (isJump == true) return;
-        Touch touch = Input.GetTouch(0);
-
-        if (Input.mousePosition.x <= Screen.width / 2)
-        {
-            // 左側をタップしたら
-            if (touch.phase == TouchPhase.Began)
-            {
-                audioSource.PlayOneShot(jumpSE);
-                rb2D.AddForce(transform.up * jumpPower, ForceMode2D.Impulse);
-                isJump = true;
-            }
-        }
-#endif
-    }
+    
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.tag == "Floor")
