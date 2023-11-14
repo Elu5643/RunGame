@@ -33,7 +33,6 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameSoundManager.Instance.PlayBGM(GameSoundManager.BGMType.Stage1);
         rb2D = GetComponent<Rigidbody2D>();
         rb2D.gravityScale = 5.0f;
     }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameSoundManager : SingletonMonoBehaviour<GameSoundManager>
 {
@@ -11,13 +10,11 @@ public class GameSoundManager : SingletonMonoBehaviour<GameSoundManager>
     AudioSource[] BGMSources = new AudioSource[3];
     AudioSource[] SESources = new AudioSource[5];
 
-    string sceneName;
-
     public enum BGMType
     {
         Title,
         StageSelect,
-        Stage1
+        Stage
     }
 
     public enum SEType
@@ -29,8 +26,10 @@ public class GameSoundManager : SingletonMonoBehaviour<GameSoundManager>
         Death,
     }
 
-    void Start()
+    protected override void Awake()
     {
+        base.Awake();
+
         for (int i = 0; i < BGMSources.Length; i++)
         {
             BGMSources[i] = gameObject.AddComponent<AudioSource>();
@@ -42,37 +41,12 @@ public class GameSoundManager : SingletonMonoBehaviour<GameSoundManager>
             SESources[i] = gameObject.AddComponent<AudioSource>();
             SESources[i].clip = SEClips[i];
         }
-
-    }
-
-    void Update()
-    {
-        sceneName = SceneManager.GetActiveScene().name;
-        
-        if (sceneName == "TitleScene")
-        {
-            BGMSources[(int)BGMType.StageSelect].Stop();
-            BGMSources[(int)BGMType.Stage1].Stop();
-        
-        }
-        else if(sceneName == "StageSelect")
-        {
-            BGMSources[(int)BGMType.Title].Stop();
-            BGMSources[(int)BGMType.Stage1].Stop();
-        }
-        else if(sceneName == "Stage1")
-        {
-            BGMSources[(int)BGMType.Title].Stop();
-            BGMSources[(int)BGMType.StageSelect].Stop();
-        }
     }
 
     public void PlayBGM(BGMType bgmType)
     {
-        if(!BGMSources[(int)bgmType].isPlaying)
-        {
-            BGMSources[(int)bgmType].PlayOneShot(BGMClips[(int)bgmType]);
-        }
+        PlayBGMStop();
+        BGMSources[(int)bgmType].PlayOneShot(BGMClips[(int)bgmType]);
     }
 
     public void PlaySE(SEType seType)

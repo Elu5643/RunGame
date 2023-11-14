@@ -26,8 +26,6 @@ public class PlayerTutorial : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GameSoundManager.Instance.PlayBGM(GameSoundManager.BGMType.Title);
-
         Jump();
         GravitySwitch();
     }
