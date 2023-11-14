@@ -1804,6 +1804,8 @@ MonoBehaviour:
   stage1Button: {fileID: 1283333038}
   stage2Button: {fileID: 1852838025}
   stage3Button: {fileID: 1319994491}
+  stage4Button: {fileID: 896623272}
+  stage5Button: {fileID: 167895807}
   backMenu: {fileID: 918510853}
 --- !u!4 &1935459068
 Transform:

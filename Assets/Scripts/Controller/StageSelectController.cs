@@ -9,6 +9,8 @@ public class StageSelectController : MonoBehaviour
     [SerializeField] Button stage1Button = null;
     [SerializeField] Button stage2Button = null;
     [SerializeField] Button stage3Button = null;
+    [SerializeField] Button stage4Button = null;
+    [SerializeField] Button stage5Button = null;
     [SerializeField] Button backMenu = null;
 
 
@@ -19,6 +21,8 @@ public class StageSelectController : MonoBehaviour
         stage1Button.onClick.AddListener(OnClickStage1Button);
         stage2Button.onClick.AddListener(OnClickStage2Button);
         stage3Button.onClick.AddListener(OnClickStage3Button);
+        stage4Button.onClick.AddListener(OnClickStage4Button);
+        stage5Button.onClick.AddListener(OnClickStage5Button);
         backMenu.onClick.AddListener(OnClickBackMenuButton);
     }
 
@@ -38,6 +42,16 @@ public class StageSelectController : MonoBehaviour
     void OnClickStage3Button()
     {
         StartCoroutine(StageSelectButton("Stage3"));
+    }
+
+    void OnClickStage4Button()
+    {
+        StartCoroutine(StageSelectButton("Stage4"));
+    }
+
+    void OnClickStage5Button()
+    {
+        StartCoroutine(StageSelectButton("Stage5"));
     }
 
     void OnClickBackMenuButton()
